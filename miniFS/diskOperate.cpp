@@ -5,11 +5,13 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <malloc.h>
 
 char *disk_Start_Address;
 
 //fat表
 int fat[block_number];
+bool bitmap[block_number];
 
 //空闲块个数
 int unused_block_num;
@@ -30,6 +32,7 @@ void create_memory()
 	//初始化文件节点表
 	fcb = NULL;
 	unused_block_num = block_number;
+	memset(bitmap, 0, sizeof bitmap);
 }
 
 // 获得第k块首地址
@@ -50,14 +53,43 @@ void delete_memory()
 	free(disk_Start_Address);
 }
 
+// 为文件分配空白块
+void set_block(int file_size)
+{
+	int number_of_block = ceil(file_size / block_size);
+	int last_block_num = -1;
+	
+	// 遍历FAT表空白块
+	for (int i = 0; i < block_number; i++)
+	{
+		if (!bitmap[i])
+		{
+			bitmap[i] = 1;
+			if (last_block_num != -1)
+				fat[last_block_num] = i;
+			last_block_num = i;
+			number_of_block -= 1;
+			if (!number_of_block)
+				break;
+		}
+	}
+	return;
+}
+
 // 在磁盘空间创建新文件
 void create_file(char file_name[], int file_size)
 {
 	using namespace std;
-	
-	ifstream fin;
-	ofstream fout;
 
+	// 获得创建文件时的时间
+	SYSTEMTIME systime;
+	GetSystemTime(&systime);
+	FILETIME filetime;
+	SystemTimeToFileTime(&systime, &filetime);
+	uint64_t create_file_time = filetime.dwHighDateTime << 32 | filetime.dwLowDateTime;
+
+
+	// 文件所需存储块数 向上取整
 	int number_of_block = ceil(file_size / block_size);
 	
 	// 空间不足 报错
@@ -67,23 +99,11 @@ void create_file(char file_name[], int file_size)
 		return;
 	}
 
+	// 空间足够 分配空白块
 	unused_block_num -= number_of_block;
-
-	// 遍历FAT表空白块
-	int last_block_num = -1;
-	for (int i = 0; i < block_number; i++)
-	{
-		if (fat[i] == -1)
-		{
-			number_of_block -= 1;
-			if (last_block_num != -1)
-				fat[last_block_num] = i;
-			last_block_num = i;
-			if (number_of_block == 0)
-				break;
-		}
-	}
-	fat[last_block_num] = 0;
+	set_block(file_size);
+	
+	// 创建新的文件节点FileNode
 	
 }
 
