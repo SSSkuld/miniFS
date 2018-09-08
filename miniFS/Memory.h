@@ -13,6 +13,7 @@
 #define block_size 4 * 1024
 #define filenode_size 64
 #define fat_size 4
+#define const_address "1.txt"
 
 // …Í«Îø’º‰
 void create_memory();

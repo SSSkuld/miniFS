@@ -23,9 +23,19 @@ FileNode *fcb;
 // 创建磁盘空间
 void create_memory()
 {
+	using namespace std;
 	// 1GB空间
-	disk_Start_Address = (char *)malloc(disk_size * sizeof(char *));
-
+	fstream disk_file;
+	disk_file.open("1.txt", ios::out);
+	if (!disk_file.is_open())
+	{
+		printf("创建失败！！！\n");
+		return;
+	}
+	disk_file.seekg(disk_size-1, ios::cur);
+	disk_file << '\0';
+	disk_file.close();
+	
 	// 初始化FAT表
 	for (int i = 0; i < block_number; i++)
 		fat[i] = -1;
@@ -99,11 +109,13 @@ void create_file(char file_name[], int file_size)
 		return;
 	}
 
+
 	// 空间足够 分配空白块
 	unused_block_num -= number_of_block;
 	set_block(file_size);
 	
 	// 创建新的文件节点FileNode
+	FileNode *new_file = new FileNode;
 	
 }
 

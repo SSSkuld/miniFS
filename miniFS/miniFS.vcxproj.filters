@@ -27,13 +27,7 @@
     <ClInclude Include="FileNode.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="FATList.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Memory.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="File.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -45,6 +39,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="diskOperate.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FileNodeOperate.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
