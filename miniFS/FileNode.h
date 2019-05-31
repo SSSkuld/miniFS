@@ -1,7 +1,6 @@
 //#ifndef FILENODE.H
 //#define FILENODE.H
 
-
 #include <iostream>
 #include <cstring>
 #include <algorithm>
@@ -10,17 +9,6 @@
 #include <cstdlib>
 #include <Windows.h>
 
-/*
-	先不考虑文件夹类
-	只写文件类
-	变量全为 private 类型
-	需要调用自行编写 public访问接口
-
-	命名规则:
-		类名用大写驼峰
-		类内变量名用 _ 分割单词 除首单词小写外其余单词首字母均大写
-		类内函数 _分割单词 均小写
-*/
 class FileNode
 {
 public:
@@ -29,20 +17,57 @@ public:
 	~FileNode();
 
 	//初始化构造函数
-	//参数列表依次为：文件名 后缀名 创建日期 文件大小 首块编号
-	FileNode(char [], char [], uint64_t, int, int);
+	//参数列表依次为：文件名 后缀名 创建日期 文件大小 首块编号 文件夹编号 父级文件夹编号
+	FileNode(char [], char [], uint64_t, int32_t, int32_t, int32_t, int32_t);
 		
-	void show_time(FileNode x);
+	//按照1970-01-01 00:00:00 格式打印时间
+	void show_time();
 
 	//重载==运算符 当且仅当文件名与后缀名都相等时返回true
 	bool operator == (const FileNode &x) const;
+
+	//获取file_size接口
+	int32_t get_file_size();
+	
+	//打印文件名接口
+	void show_file_name();
+
+	//获取首块编号
+	int32_t get_first_block_number();
+
+	//获取文件夹编号
+	int32_t get_folder_number();
+	
+	//获取父级文件夹编号
+	int32_t get_belong_folder_number();
+
+	//获取创建时间
+	uint64_t get_create_Date();
+
+	//获取修改时间
+	uint64_t get_change_Date();
+
+	//获得文件名
+	char * get_file_name();
+
+	//获得文件后缀
+	char * get_file_suffix();
+
+	void rename_name(char []);
+
+	void rename_suffix(char[]);
+
+	void change_file_size(int32_t);
 
 private:
 	char file_Name[9];
 	char file_Suffix[4];
 	uint64_t create_Date;
-	int file_Size;
-	int first_Block_Num;
+	uint64_t change_Date;
+	int32_t file_Size;
+	int32_t first_Block_Num;
+	int32_t folder_number;
+	int32_t belong_folder_number;
 };
 
 //#endif // !FILENODE.H
